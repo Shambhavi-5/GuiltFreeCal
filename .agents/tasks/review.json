@@ -1,0 +1,27 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "id": 1,
+      "label": "Client-owned activity data written directly to DB",
+      "summary": "POST /api/replan trusts the client's activities payload and writes it to the DB without re-reading from the server. Stale or tampered client state silently overwrites DB records. Fix: re-fetch Activity.find({ date }) inside the route handler before calling replanEngine.",
+      "blocking": true,
+      "confidence": "confirmed"
+    },
+    {
+      "id": 2,
+      "label": "Skipped-activity sentinel time persists in snapshotAfter",
+      "summary": "replanEngine marks skipped activities with start/end '23:59' as a sort sentinel. The live DB update correctly avoids writing those times, but snapshotAfter is built from finalActivities which still carries them. History snapshots show 23:59→23:59 for every skipped task. Fix: strip sentinel times before storing snapshotAfter, or use a dedicated _skipped flag.",
+      "blocking": false,
+      "confidence": "confirmed"
+    },
+    {
+      "id": 3,
+      "label": "Done/partial activities can duplicate in merged output",
+      "summary": "The engine merges unchanged (done/partial) activities back into the final sorted result alongside newly scheduled activities. Two consecutive replans on the same day can produce two entries at the same time slot. Fix: deduplicate by _id before the final sort in replanEngine.",
+      "blocking": false,
+      "confidence": "confirmed"
+    }
+  ],
+  "reviewDoc": "c:\\Users\\Shambhavi\\Desktop\\TY_Labs\\Wev_Tech\\Calnder\\.agents\\tasks\\review.md"
+}
