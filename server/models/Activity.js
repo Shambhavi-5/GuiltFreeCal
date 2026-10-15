@@ -38,10 +38,51 @@ const activitySchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["upcoming", "done", "partial", "skipped"],
+      enum: ["upcoming", "in-progress", "done", "partial", "skipped", "missed"],
       default: "upcoming",
     },
 
+    // Expected energy requirement of the task (LOW, MEDIUM, HIGH)
+    expectedEnergy: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH"],
+      default: "MEDIUM",
+    },
+
+    // Task priority on a simple 1-5 scale (1 = lowest, 5 = highest)
+    priority: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: 3,
+    },
+
+    // Optional deadline or preferred completion time (e.g. "17:00")
+    deadline: {
+      type: String,
+      default: null,
+    },
+
+    // Actual duration in minutes recorded upon completion
+    actualDuration: {
+      type: Number,
+      default: null,
+    },
+
+    // Actual perceived energy level recorded upon completion
+    actualEnergy: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH", null],
+      default: null,
+    },
+
+    // Optional short reflection after completing the activity
+    reflection: {
+      type: String,
+      default: "",
+    },
+
+    // Legacy energy field preserved for backward compatibility
     energy: {
       type: Number,
       min: 1,
@@ -52,6 +93,11 @@ const activitySchema = new mongoose.Schema(
     date: {
       type: String,
       required: true,
+    },
+
+    userId: {
+      type: String,
+      default: "default-user",
     },
   },
   {

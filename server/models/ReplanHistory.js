@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const replanHistorySchema = new mongoose.Schema({
+  userId: { type: String, default: 'default-user' },
   date: { type: String, required: true },
   replanAt: { type: Date, default: Date.now },
   energyAtReplan: { type: Number, min: 1, max: 5 },
@@ -10,6 +11,10 @@ const replanHistorySchema = new mongoose.Schema({
   totalWorkMinutes: { type: Number },
   totalRestMinutes: { type: Number },
   skippedCount: { type: Number },
+  versionId: { type: String },
+  versionSummary: { type: String },
+  commitHash: { type: String },
+  commitMessage: { type: String },
   snapshotBefore: [{ type: mongoose.Schema.Types.Mixed }],
   snapshotAfter: [{ type: mongoose.Schema.Types.Mixed }]
 }, { timestamps: true });
